@@ -9,7 +9,6 @@ const PokemonDetail = () => {
   const { name } = useParams();
   const [pokemon, setPokemon] = useState<PokemonDetailType | null>(null)
 
-
   useEffect(() => {
     if(!name) {
       return;
