@@ -1,13 +1,10 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+html {margin:0; padding:0; font-size:62.5%; line-height: 1.15; }
+body, input, select, button, textarea, h1, h2, h3, h4, h5, h6, table {color:#222; font: 400 1.4rem/100% "Noto Sans Korean", sans-serif; 
+word-wrap:break-word; word-break:keep-all; -webkit-transition:all 0.3s ease; -o-transition:all 0.3s ease; transition:all 0.3s ease; 
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
 }
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+a {
+  color: inherit;
+  text-decoration: none;
 }
