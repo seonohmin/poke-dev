@@ -1,24 +1,26 @@
 import styled from "@emotion/styled";
 import PokeMarkChip from "../Common/PokeMarkChip";
-import { PokemonDetailType, fetchPokemonDetail } from "../Service/pokemonService";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { PokeImageSkeleton } from "../Common/PokeImageSkeleton";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "../Store";
+import { fetchPokemonsDetail } from "../Store/pokemonDetailSlice";
 
 const PokemonDetail = () => {
   const { name } = useParams();
-  const [pokemon, setPokemon] = useState<PokemonDetailType | null>(null)
+  const imageType = useSelector((state: RootState) => state.imageType.type)
+  const { pokemonDetails } = useSelector((state: RootState) => state.pokemonDetail)
+  const pokemon = name ? pokemonDetails[name] : null;
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if(!name) {
       return;
     }
 
-    (async () => {
-      const detail = await fetchPokemonDetail(name);
-      setPokemon(detail);
-    })()
-  }, [name])
+    dispatch(fetchPokemonsDetail(name))
+  }, [dispatch, name])
 
   if(!name || !pokemon) {
     return (
@@ -37,7 +39,7 @@ const PokemonDetail = () => {
   return (
     <Container>
       <ImageContainer>
-        <Image src={pokemon.images.dreamWorldFront} alt={pokemon.koreanName} /> 
+        <Image src={pokemon.images[imageType]} alt={pokemon.koreanName} /> 
       </ImageContainer>
       <Divider />
       <Body>

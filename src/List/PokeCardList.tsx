@@ -1,38 +1,29 @@
 import styled from "@emotion/styled"
 import PokeCard from "./PokeCard";
 import { useEffect } from "react";
-import { PokemonListReponseType, fetchPokemons } from "../Service/pokemonService";
-import { useState } from "react";
 import useInfiniteScroll from "react-infinite-scroll-hook";
+import { fetchPokemons } from "../Store/pokemonsSlice";
+import { RootState, useAppDispatch } from "../Store";
+import { useSelector } from "react-redux";
 
 const PokeCardList = () => {
-  const [pokemons, setPokemons] = useState<PokemonListReponseType>({
-    count: 0,
-    next: '',
-    results: []
-  })
+  const dispatch = useAppDispatch()
+  const { pokemons } = useSelector((state: RootState) => state.pokemons)
+
 
   const [infiniteRef] = useInfiniteScroll({
     loading: false,
     hasNextPage: pokemons.next !== '',
     onLoadMore: async () => {
-      const morePokemons = await fetchPokemons(pokemons.next);
-
-      setPokemons({
-        ...morePokemons,
-        results: [...pokemons.results, ...morePokemons.results]
-      })
+      dispatch(fetchPokemons(pokemons.next));
     },
     disabled: false,
     rootMargin: '0px 0px 400px 0px',
   });
 
   useEffect(() => {
-    (async () => {
-      const pokemons = await fetchPokemons();
-      setPokemons(pokemons);
-    })()
-  }, [])
+    dispatch(fetchPokemons());
+  }, [dispatch])
 
   return (
     <List>

@@ -3,9 +3,12 @@ import PokeNameChip from "../Common/PokeNameChip";
 import PokeMarkChip from "../Common/PokeMarkChip";
 import { useIntersectionObserver } from 'react-intersection-observer-hook'
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { PokemonDetailType, fetchPokemonDetail } from "../Service/pokemonService";
+import { useEffect } from "react";
+
 import { PokeImageSkeleton } from "../Common/PokeImageSkeleton";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "../Store";
+import { fetchPokemonsDetail } from "../Store/pokemonDetailSlice";
 
 interface PokeCardProps {
   name: string
@@ -13,9 +16,12 @@ interface PokeCardProps {
 
 const PokeCard = (props:PokeCardProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const imageType = useSelector((state: RootState) => state.imageType.type)
+  const { pokemonDetails } = useSelector((state: RootState) => state.pokemonDetail)
+  const pokemon = pokemonDetails[props.name]
   const [ref, { entry }] = useIntersectionObserver();
   const isVisible = entry && entry.isIntersecting;
-  const [pokemon, setPokemon] = useState<PokemonDetailType | null>(null)
 
   const handleClick = () => {
     navigate(`/pokemon/${props.name}`);
@@ -25,12 +31,8 @@ const PokeCard = (props:PokeCardProps) => {
     if(!isVisible) {
       return;
     }
-
-    (async () => {
-      const detail = await fetchPokemonDetail(props.name);
-      setPokemon(detail);
-    })()
-  }, [props.name, isVisible])
+    dispatch(fetchPokemonsDetail(props.name))
+  }, [dispatch, props.name, isVisible])
 
   if(!pokemon) {
     return (
@@ -54,7 +56,7 @@ const PokeCard = (props:PokeCardProps) => {
         <PokeNameChip name={pokemon.koreanName} color={pokemon.color} id={pokemon.id}/>
       </Header>
       <Body>
-        <Image src={pokemon.images.dreamWorldFront} alt={pokemon.name} /> 
+        <Image src={pokemon.images[imageType]} alt={pokemon.name} /> 
       </Body>
       <Footer>
         <PokeMarkChip />
